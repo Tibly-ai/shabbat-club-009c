@@ -23,7 +23,7 @@
 <script>document.addEventListener('input',function(e){var t=e.target;if(!t||t.type!=='range')return;var c=t.closest&&t.closest('.tibly-ba');if(c)c.style.setProperty('--ba',t.value+'%')});document.addEventListener('pointerdown',function(e){var c=e.target.closest&&e.target.closest('.tibly-ba');if(!c||e.button>0)return;e.preventDefault();var inp=c.querySelector('input[type=range]');var set=function(x){var r=c.getBoundingClientRect();if(!r.width)return;var p=Math.max(0,Math.min(100,(x-r.left)*100/r.width));c.style.setProperty('--ba',p+'%');if(inp)inp.value=Math.round(p)};set(e.clientX);var mv=function(ev){set(ev.clientX)};var up=function(){document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up)};document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)});document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('[data-lightbox]');if(!im||!(im.currentSrc||im.src))return;e.preventDefault();var o=document.createElement('div');o.className='tibly-lb';var big=document.createElement('img');big.src=im.currentSrc||im.src;big.alt=im.alt||'';o.appendChild(big);o.addEventListener('click',function(){o.remove()});document.addEventListener('keydown',function esc(ev){if(ev.key==='Escape'){o.remove();document.removeEventListener('keydown',esc)}});document.body.appendChild(o)});document.addEventListener('click',function(e){var x=e.target.closest&&e.target.closest('[data-announce-close]');if(!x)return;var b=x.closest('[data-announce]');if(b){b.style.display='none';try{sessionStorage.setItem('tibly-announce','1')}catch(_){}}});addEventListener('DOMContentLoaded',function(){try{if(sessionStorage.getItem('tibly-announce')==='1'){var b=document.querySelector('[data-announce]');if(b)b.style.display='none'}}catch(_){}if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){var els=document.querySelectorAll('[data-count]');if(els.length){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;io.unobserve(en.target);var el=en.target,s=el.textContent||'',m=s.match(/[\d,]*\d(?:\.\d+)?/);if(!m)return;var raw=m[0],num=parseFloat(raw.replace(/,/g,''));if(!isFinite(num))return;if(!el.getAttribute('data-count'))el.setAttribute('data-count',s);var pre=s.slice(0,m.index),post=s.slice(m.index+raw.length),grp=raw.indexOf(',')>=0,dec=(raw.split('.')[1]||'').length,t0=performance.now();requestAnimationFrame(function tick(now){var p=Math.min((now-t0)/1400,1);p=1-Math.pow(1-p,3);var v=(num*p).toFixed(dec);if(grp)v=Number(v).toLocaleString('en-US',{minimumFractionDigits:dec});el.textContent=pre+v+post;if(p<1)requestAnimationFrame(tick)})})},{rootMargin:'0px 0px -10% 0px'});els.forEach(function(el){io.observe(el)})}}var badge=document.querySelector('[data-tibly-open]');if(badge){var src=document.querySelector('[data-tibly-field="hours"]');var txt=(src&&src.textContent||'').toLowerCase();var days=['sun','mon','tue','wed','thu','fri','sat'];var toMin=function(h,mm,ap){h=+h;mm=+(mm||0);if(ap==='pm'&&h!==12)h+=12;if(ap==='am'&&h===12)h=0;return h*60+mm};var spans=[];var re=/(sun|mon|tue|wed|thu|fri|sat|daily|every ?day)[a-z]*\s*(?:[-\u2013\u2014]\s*(sun|mon|tue|wed|thu|fri|sat)[a-z]*)?\s*:?\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*[-\u2013\u2014]\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/g,mm;while((mm=re.exec(txt))){var d1=mm[1].slice(0,3),d2=mm[2],ap1=mm[5]||(mm[8]==='pm'&&+mm[3]<=+mm[6]?'am':mm[8]),o=toMin(mm[3],mm[4],ap1),c=toMin(mm[6],mm[7],mm[8]);var from=d1==='dai'||d1==='eve'?0:days.indexOf(d1),to=d2?days.indexOf(d2.slice(0,3)):(d1==='dai'||d1==='eve'?6:from);if(from<0)continue;for(var d=from;;d=(d+1)%7){spans.push([d,o,c]);if(d===to)break}}if(spans.length){var now=new Date(),cur=now.getDay(),min=now.getHours()*60+now.getMinutes();var open=spans.some(function(s){return s[0]===cur&&min>=s[1]&&min<s[2]});badge.textContent=open?(badge.getAttribute('data-open-text')||'Open now'):(badge.getAttribute('data-closed-text')||'Closed now');badge.setAttribute('data-state',open?'open':'closed');badge.hidden=false}}});</script>
 <style>header a[aria-current="page"]:not(:has(img,svg)){text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}</style>
 <style>#nav-open~[class*="peer-checked:"][class*="fixed"]{min-height:100vh;min-height:100dvh}@media (prefers-reduced-motion:no-preference){label[for="nav-open"] span{transition:transform .3s ease,opacity .2s ease}header:has(#nav-open:checked) label[for="nav-open"]:not([aria-label="Close" i]) span:not(:has(span)):nth-of-type(1){transform:translateY(8px) rotate(45deg)}header:has(#nav-open:checked) label[for="nav-open"]:not([aria-label="Close" i]) span:not(:has(span)):nth-of-type(2){opacity:0}header:has(#nav-open:checked) label[for="nav-open"]:not([aria-label="Close" i]) span:not(:has(span)):nth-of-type(3){transform:translateY(-8px) rotate(-45deg)}#nav-open:checked~[class*="peer-checked:"]{animation:tibly-nav-in .25s ease}#nav-open:checked~[class*="peer-checked:"] label[for="nav-open"]{display:inline-block;animation:tibly-x-in .35s ease}@keyframes tibly-nav-in{from{opacity:0;transform:translateY(10px)}}@keyframes tibly-x-in{from{opacity:0;transform:rotate(-90deg) scale(.6)}}}</style>
-<link rel="stylesheet" href="/styles.css?v=7c5a4987"/>
+<link rel="stylesheet" href="/styles.css?v=342bb5a4"/>
 </head>
 <body>
 <!-- block:header -->
@@ -160,72 +160,6 @@
   </div>
 </section>
 <!-- /block:pull-quote -->
-<!-- block:feature-rows -->
-<section class="bg-surface text-ink" data-block="feature-rows">
-  <div class="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 md:py-28 lg:px-8">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-12 md:items-end">
-      <div class="md:col-span-8">
-        <p class="font-body text-[11px] font-bold uppercase tracking-[0.3em] text-brand-700">Press</p>
-        <h2 class="mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">Where we’ve been written about</h2>
-      </div>
-      <div class="md:col-span-4">
-        <p class="max-w-prose font-body text-sm leading-relaxed text-ink/70">
-          <br/>
-        </p>
-      </div>
-    </div>
-
-    <ul class="mt-12 border-t border-ink/20">
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">01</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">Forbes</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.forbes.com/sites/sophielizacannon/2025/08/07/shabbat-clubs-in-new-york-are-helping-jewish-adults-find-their-tribe/" rel="noopener" target="_blank">Shabbat Clubs In New York Are Helping Jewish Adults Find Their Tribe</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">02</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">NY Jewish Week</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.jta.org/2025/02/07/ny/swanky-secular-shabbat-parties-keep-popping-up-in-nyc" rel="noopener" target="_blank">Swanky, secular Shabbat parties keep popping up in NYC</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">03</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">Tablet Magazine</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.tabletmag.com/sections/belief/articles/different-spin-shabbat" rel="noopener" target="_blank">A Different Spin on Shabbat</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">04</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">NY Jewish Week</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.jta.org/2024/05/29/ny/meet-the-new-york-jewish-weeks-36-to-watch-2024" rel="noopener" target="_blank">Meet the New York Jewish Week’s 36 to Watch 2024</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">05</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">NY Post</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://nypost.com/2024/11/27/lifestyle/gen-z-and-millennials-do-shabbat-with-showgirls-djs-shots/" rel="noopener" target="_blank">Showgirls! DJs! Open bar! Shots! How Gen Z and Millennials do Shabbat</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">06</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">Ha’aretz</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.haaretz.co.il/gallery/galleryfriday/2024-11-14/ty-article-magazine/.highlight/00000193-20c2-d6bd-a1ff-31dfa2d60000" rel="noopener" target="_blank">I flew to New York to find a rich husband. I returned with insights about Judaism in 2024</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">07</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">CBS News</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.cbsnews.com/newyork/news/rosh-hashanah-one-year-after-october-7th-attacks/?fbclid=PAZXh0bgNhZW0CMTEAAab5jr49Pz9REWxj8PdMowvbeYL9ls94FtGKQiuKQt5ry2rxIjsDdM1cbps_aem_CY5lX8ME4ZoSNM09lMoaPw" rel="noopener" target="_blank">Oct. 7 attacks top of mind as New Yorkers prepare to celebrate Rosh Hashanah</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">08</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">Bloomberg</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.bloomberg.com/news/articles/2026-08-21/israeli-restaurants-in-new-york-like-malka-or-esh-and-motek-are-booking-up?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzb3VyY2UiOiJTdWJzY3JpYmVyR2lmdGVkQXJ0aWNsZSIsImlhdCI6MTc4NzMwODM0NSwiZXhwIjoxNzg3OTEzMTQ1LCJhcnRpY2xlSWQiOiJUSzQ2RzJLSUpIOUEwMCIsImJjb25uZWN0SWQiOiI4RENBNTA1MjBBM0I0QUExQUM3NEQ4M0JERDFFOTI4OSJ9.B3FltwbK02gw4IklmcvAJP4NINoV2U1AVVVyLyh5yH4" rel="noopener" target="_blank">New York’s Israeli Restaurants Are Doing Better Than You Might Think</a></span>
-      </li>
-      <li class="group grid grid-cols-1 gap-2 border-b border-ink/15 py-6 transition-colors hover:bg-white md:grid-cols-12 md:items-baseline md:gap-6 md:px-4">
-        <span class="font-body text-[11px] font-bold tracking-[0.24em] text-accent-600 md:col-span-1">09</span>
-        <span class="font-body text-[11px] font-bold uppercase tracking-[0.22em] text-brand-700 md:col-span-3">Fluent Mag</span>
-        <span class="font-display text-xl leading-snug text-ink transition-colors group-hover:text-brand-700 md:col-span-8 md:text-2xl"><a href="https://www.fluentmag.com/article/where-to-meet-people-nyc" rel="noopener" target="_blank">Where to find your people in NYC</a></span>
-      </li>
-      
-    </ul>
-  </div>
-</section>
-<!-- /block:feature-rows -->
 <!-- block:gallery-strip -->
 <section class="bg-white text-ink" data-block="gallery-strip">
   
