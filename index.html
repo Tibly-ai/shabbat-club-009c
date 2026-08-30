@@ -23,7 +23,7 @@
 <script>document.addEventListener('input',function(e){var t=e.target;if(!t||t.type!=='range')return;var c=t.closest&&t.closest('.tibly-ba');if(c)c.style.setProperty('--ba',t.value+'%')});document.addEventListener('pointerdown',function(e){var c=e.target.closest&&e.target.closest('.tibly-ba');if(!c||e.button>0)return;e.preventDefault();var inp=c.querySelector('input[type=range]');var set=function(x){var r=c.getBoundingClientRect();if(!r.width)return;var p=Math.max(0,Math.min(100,(x-r.left)*100/r.width));c.style.setProperty('--ba',p+'%');if(inp)inp.value=Math.round(p)};set(e.clientX);var mv=function(ev){set(ev.clientX)};var up=function(){document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up)};document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)});document.addEventListener('click',function(e){var im=e.target.closest&&e.target.closest('[data-lightbox]');if(!im||!(im.currentSrc||im.src))return;e.preventDefault();var o=document.createElement('div');o.className='tibly-lb';var big=document.createElement('img');big.src=im.currentSrc||im.src;big.alt=im.alt||'';o.appendChild(big);o.addEventListener('click',function(){o.remove()});document.addEventListener('keydown',function esc(ev){if(ev.key==='Escape'){o.remove();document.removeEventListener('keydown',esc)}});document.body.appendChild(o)});document.addEventListener('click',function(e){var x=e.target.closest&&e.target.closest('[data-announce-close]');if(!x)return;var b=x.closest('[data-announce]');if(b){b.style.display='none';try{sessionStorage.setItem('tibly-announce','1')}catch(_){}}});addEventListener('DOMContentLoaded',function(){try{if(sessionStorage.getItem('tibly-announce')==='1'){var b=document.querySelector('[data-announce]');if(b)b.style.display='none'}}catch(_){}if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){var els=document.querySelectorAll('[data-count]');if(els.length){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;io.unobserve(en.target);var el=en.target,s=el.textContent||'',m=s.match(/[\d,]*\d(?:\.\d+)?/);if(!m)return;var raw=m[0],num=parseFloat(raw.replace(/,/g,''));if(!isFinite(num))return;if(!el.getAttribute('data-count'))el.setAttribute('data-count',s);var pre=s.slice(0,m.index),post=s.slice(m.index+raw.length),grp=raw.indexOf(',')>=0,dec=(raw.split('.')[1]||'').length,t0=performance.now();requestAnimationFrame(function tick(now){var p=Math.min((now-t0)/1400,1);p=1-Math.pow(1-p,3);var v=(num*p).toFixed(dec);if(grp)v=Number(v).toLocaleString('en-US',{minimumFractionDigits:dec});el.textContent=pre+v+post;if(p<1)requestAnimationFrame(tick)})})},{rootMargin:'0px 0px -10% 0px'});els.forEach(function(el){io.observe(el)})}}var badge=document.querySelector('[data-tibly-open]');if(badge){var src=document.querySelector('[data-tibly-field="hours"]');var txt=(src&&src.textContent||'').toLowerCase();var days=['sun','mon','tue','wed','thu','fri','sat'];var toMin=function(h,mm,ap){h=+h;mm=+(mm||0);if(ap==='pm'&&h!==12)h+=12;if(ap==='am'&&h===12)h=0;return h*60+mm};var spans=[];var re=/(sun|mon|tue|wed|thu|fri|sat|daily|every ?day)[a-z]*\s*(?:[-\u2013\u2014]\s*(sun|mon|tue|wed|thu|fri|sat)[a-z]*)?\s*:?\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s*[-\u2013\u2014]\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/g,mm;while((mm=re.exec(txt))){var d1=mm[1].slice(0,3),d2=mm[2],ap1=mm[5]||(mm[8]==='pm'&&+mm[3]<=+mm[6]?'am':mm[8]),o=toMin(mm[3],mm[4],ap1),c=toMin(mm[6],mm[7],mm[8]);var from=d1==='dai'||d1==='eve'?0:days.indexOf(d1),to=d2?days.indexOf(d2.slice(0,3)):(d1==='dai'||d1==='eve'?6:from);if(from<0)continue;for(var d=from;;d=(d+1)%7){spans.push([d,o,c]);if(d===to)break}}if(spans.length){var now=new Date(),cur=now.getDay(),min=now.getHours()*60+now.getMinutes();var open=spans.some(function(s){return s[0]===cur&&min>=s[1]&&min<s[2]});badge.textContent=open?(badge.getAttribute('data-open-text')||'Open now'):(badge.getAttribute('data-closed-text')||'Closed now');badge.setAttribute('data-state',open?'open':'closed');badge.hidden=false}}});</script>
 <style>header a[aria-current="page"]:not(:has(img,svg)){text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}</style>
 <style>#nav-open~[class*="peer-checked:"][class*="fixed"]{min-height:100vh;min-height:100dvh}@media (prefers-reduced-motion:no-preference){label[for="nav-open"] span{transition:transform .3s ease,opacity .2s ease}header:has(#nav-open:checked) label[for="nav-open"]:not([aria-label="Close" i]) span:not(:has(span)):nth-of-type(1){transform:translateY(8px) rotate(45deg)}header:has(#nav-open:checked) label[for="nav-open"]:not([aria-label="Close" i]) span:not(:has(span)):nth-of-type(2){opacity:0}header:has(#nav-open:checked) label[for="nav-open"]:not([aria-label="Close" i]) span:not(:has(span)):nth-of-type(3){transform:translateY(-8px) rotate(-45deg)}#nav-open:checked~[class*="peer-checked:"]{animation:tibly-nav-in .25s ease}#nav-open:checked~[class*="peer-checked:"] label[for="nav-open"]{display:inline-block;animation:tibly-x-in .35s ease}@keyframes tibly-nav-in{from{opacity:0;transform:translateY(10px)}}@keyframes tibly-x-in{from{opacity:0;transform:rotate(-90deg) scale(.6)}}}</style>
-<link rel="stylesheet" href="/styles.css?v=18ba8a0f"/>
+<link rel="stylesheet" href="/styles.css?v=fee84a36"/>
 </head>
 <body>
 <!-- block:header -->
@@ -122,101 +122,7 @@
 </section>
 <!-- /block:longform-intro -->
 <!-- block:feature-rows -->
-<section class="bg-white py-16 sm:py-20 md:py-28" data-block="feature-rows">
-  <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="max-w-2xl">
-      <h2 class="font-body text-[11px] font-bold uppercase tracking-[0.26em] text-brand-700">The programming</h2>
-      <p class="mt-4 font-display text-3xl font-bold leading-tight text-ink sm:text-4xl md:text-5xl">3 ways to spend your night with us.</p>
-    </div>
-
-    <div class="mt-14 space-y-16 md:mt-20 md:space-y-24">
-
-      <article class="group grid grid-cols-1 items-center gap-8 border-t border-ink/15 pt-10 md:grid-cols-12 md:gap-12">
-        <div class="overflow-hidden rounded-sm md:col-span-7">
-          <img src="https://br-winter-boat-ajcnusyq.storage.c-3.us-east-2.aws.neon.tech/tibly-site-media/sites/230da04e-cf48-41c6-8915-c63f67fecb37/bdce2d3a348415a87c664a3b913dbdd4.jpg" alt="Safta&#39;s Table Shabbat dinner party with guests seated around a candlelit table in New York" class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-        </div>
-        <div class="md:col-span-5">
-          <p class="font-display text-4xl font-bold leading-none text-accent-400">01</p>
-          <h3 class="mt-3 font-display text-2xl font-bold leading-tight text-ink sm:text-3xl">Shabbat dinner parties</h3>
-          <p class="mt-4 max-w-prose font-body text-base leading-relaxed text-ink/75">
-            The heart of the club. Challah, wine, candles and a seating chart made on purpose. Themed dinners like Safta&#39;s Table, Love Club and A Very Schmaltzy Shabbat Club run all year long.
-          </p>
-        </div>
-      </article>
-
-      <article class="group grid grid-cols-1 items-center gap-8 border-t border-ink/15 pt-10 md:grid-cols-12 md:gap-12">
-        <div class="overflow-hidden rounded-sm md:col-span-7 md:order-2">
-          <img src="https://br-winter-boat-ajcnusyq.storage.c-3.us-east-2.aws.neon.tech/tibly-site-media/sites/230da04e-cf48-41c6-8915-c63f67fecb37/d6b202eb69065976c1f09cd32e1de708.jpg" alt="Shabbat Club karaoke night with friends singing into a microphone at a New York bar" class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-        </div>
-        <div class="md:col-span-5 md:order-1">
-          <p class="font-display text-4xl font-bold leading-none text-accent-400">02</p>
-          <h3 class="mt-3 font-display text-2xl font-bold leading-tight text-ink sm:text-3xl">Almost Shabbat &amp; karaoke</h3>
-          <p class="mt-4 max-w-prose font-body text-base leading-relaxed text-ink/75">
-            Thursday-shaped energy. Almost Shabbat happy hours take over a bar or a restaurant, and Shabbat Club Karaoke hands you the mic whether or not you can hold a note.
-          </p>
-        </div>
-      </article>
-
-      <article class="group grid grid-cols-1 items-center gap-8 border-t border-ink/15 pt-10 md:grid-cols-12 md:gap-12">
-        <div class="overflow-hidden rounded-sm md:col-span-7">
-          <img src="https://br-winter-boat-ajcnusyq.storage.c-3.us-east-2.aws.neon.tech/tibly-site-media/sites/230da04e-cf48-41c6-8915-c63f67fecb37/7fa2ae8c10ef119e352d0bc6d890a1b3.jpg" alt="Shvitz Club guests relaxing at a New York bathhouse social event" class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-        </div>
-        <div class="md:col-span-5">
-          <p class="font-display text-4xl font-bold leading-none text-accent-400">03</p>
-          <h3 class="mt-3 font-display text-2xl font-bold leading-tight text-ink sm:text-3xl">Shvitz Club</h3>
-          <p class="mt-4 max-w-prose font-body text-base leading-relaxed text-ink/75">
-            Steam, cold plunge, conversation. An old Jewish New York ritual, brought back for a group that mostly met over dinner. The Dry Jan edition is a club favorite.
-          </p>
-        </div>
-      </article>
-
-      <article class="group grid grid-cols-1 items-center gap-8 border-t border-ink/15 pt-10 md:grid-cols-12 md:gap-12">
-        <div class="overflow-hidden rounded-sm md:col-span-7 md:order-2">
-          <img src="https://br-winter-boat-ajcnusyq.storage.c-3.us-east-2.aws.neon.tech/tibly-site-media/sites/230da04e-cf48-41c6-8915-c63f67fecb37/07145b1202d6df3c175e394ab19eed11.jpg" alt="Summer camp weekend in the Poconos with friends by the lake at sunset" class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"/>
-        </div>
-        <div class="md:col-span-5 md:order-1">
-          <p class="font-display text-4xl font-bold leading-none text-accent-400">04</p>
-          <h3 class="mt-3 font-display text-2xl font-bold leading-tight text-ink sm:text-3xl">Camp weekend in the Poconos</h3>
-          <p class="mt-4 max-w-prose font-body text-base leading-relaxed text-ink/75">
-            Wet Hot Hebrew Summer: three days out of the city, Sept 4–6. Bunks, a lake, Friday night dinner under the trees. Applications are open now.
-          </p>
-          <a class="mt-6 inline-block border-b border-brand-700/50 pb-1 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-brand-700 transition-colors hover:border-brand-700 hover:text-brand-800" href="/events">Apply for camp</a>
-        </div>
-      </article>
-    </div>
-
-    <div class="mt-16 border-t border-ink/15 pt-10 md:mt-24 md:pt-14">
-      <h3 class="font-body text-[11px] font-bold uppercase tracking-[0.26em] text-brand-700">Also on the calendar</h3>
-      <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="card">
-          <h4 class="font-display text-xl font-bold text-ink">Holiday celebrations</h4>
-          <p class="mt-3 font-body text-sm leading-relaxed text-ink/70">Purim parties, Passover Seder nights, Hanukkah candle lighting and Rosh Hashanah, done our way.</p>
-        </div>
-        <div class="card">
-          <h4 class="font-display text-xl font-bold text-ink">Summer Sessions</h4>
-          <p class="mt-3 font-body text-sm leading-relaxed text-ink/70">Rooftop-season parties that run from May through August, including the Love Club edition.</p>
-        </div>
-        <div class="card">
-          <h4 class="font-display text-xl font-bold text-ink">Volunteer nights &amp; trips</h4>
-          <p class="mt-3 font-body text-sm leading-relaxed text-ink/70">Donate Your Time nights in the city and trips further out, with the same crowd you eat dinner with.</p>
-        </div>
-        <div class="card">
-          <h4 class="font-display text-xl font-bold text-ink">Field trips &amp; spotlights</h4>
-          <p class="mt-3 font-body text-sm leading-relaxed text-ink/70">Museum visits, exhibitions and community spotlight events with people doing good work in NYC.</p>
-        </div>
-        <div class="card">
-          <h4 class="font-display text-xl font-bold text-ink">Starter Packs</h4>
-          <p class="mt-3 font-body text-sm leading-relaxed text-ink/70">Everything you need to host your own Friday night, so the table keeps growing past ours.</p>
-        </div>
-        <div class="card">
-          <h4 class="font-display text-xl font-bold text-ink">Haggadah &amp; 1:1 time</h4>
-          <p class="mt-3 font-body text-sm leading-relaxed text-ink/70">Download the Shabbat Club Haggadah for your Seder, or book 1:1 time to talk hosting and community.</p>
-          <a class="mt-5 inline-block border-b border-brand-700/50 pb-1 font-body text-[11px] font-bold uppercase tracking-[0.2em] text-brand-700 transition-colors hover:border-brand-700 hover:text-brand-800" href="/tickets">Visit the shop</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<section class="bg-white py-16 sm:py-20 md:py-28" data-block="feature-rows">3 ways to hang with us.</section>
 <!-- /block:feature-rows -->
 <!-- block:gallery-strip -->
 <section class="bg-brand-800 py-16 text-surface sm:py-20 md:py-28" data-block="gallery-strip">
